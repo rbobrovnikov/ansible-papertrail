@@ -1,0 +1,9 @@
+##########Log to Papertrail service
+{% if papertrailapp_tls %}
+$DefaultNetstreamDriverCAFile {{ papertrail_syslog_ca_file }} # trust these CAs
+$ActionSendStreamDriver {{ papertrail_syslog_netstream_drv }} # use gtls netstream driver
+$ActionSendStreamDriverMode {{ "1" if papertrailapp_tls else "0" }}  # require TLS
+$ActionSendStreamDriverAuthMode {{ papertrail_syslog_drv_auth_mode }} # authenticate by hostname
+$ActionSendStreamDriverPermittedPeer {{ papertrail_syslog_drv_peer }} 
+{% endif %}
+{{ papertrail_syslog_facility }}                                                     {{ "@@" if papertrailapp_tls else "@" }}{{ papertrailapp_host }}:{{ papertrailapp_port }}

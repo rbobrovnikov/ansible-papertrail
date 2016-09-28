@@ -1,0 +1,83 @@
+---
+
+- name: Define syslog custom conf directory
+  shell: ls -d /etc/*syslog*.d
+  register: syslog_confd_dir
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Debian"
+
+- name: Get syslog service name
+  shell: ls /etc/*syslog*.conf | sed 's/\/etc\///g' | sed 's/.conf//g'
+  register: syslog_service_name
+
+- block:
+  - name: Downloading Papertrail Certificate
+    get_url:
+     url: "{{ papertrail_syslog_ca_file_url }}" 
+     dest: "{{ papertrail_syslog_ca_file }}" 
+
+  - name: Check Papertrail Certificate checksum
+    shell: md5sum {{ papertrail_syslog_ca_file }} | awk '{ print $1}'
+    register: ca_file_checksum
+
+  - debug: msg="Papertrail Certificate checksum is OK!"
+    when: ca_file_checksum.stdout == '{{ papertrail_syslog_ca_checksum }}'
+
+  - debug: msg="Papertrail Certificate checksum is BAD! Molecular desintegrating it..."
+    when: ca_file_checksum.stdout != '{{ papertrail_syslog_ca_checksum }}'
+
+  - name: Remove Papertrail Certificate if md5 checksum not matching 
+    file:
+     path: "{{ papertrail_syslog_ca_file }}"
+     state: absent
+    when: ca_file_checksum.stdout != '{{ papertrail_syslog_ca_checksum }}'
+
+  - name: Install rsyslog-gnutls pkg (RedHat)
+    yum:
+     name: rsyslog-gnutls
+     state: present
+    when: ansible_os_family == "RedHat"
+    notify:
+     - syslog restart
+
+  - name: Install rsyslog-gnutls pkg (Debian)
+    apt:
+     name: rsyslog-gnutls
+     state: present
+     update_cache: yes
+    when: ansible_os_family == "Debian" 
+    notify:
+     - syslog restart
+  when: papertrailapp_tls
+
+- name: Copy Papertrail syslog config
+  template:
+   src: papertrail/templates/syslog-papertrail.conf.j2
+   dest: "{{ syslog_confd_dir.stdout }}/papertrail.conf" 
+  notify:
+   - syslog restart
+
+- name: Installing remote_syslog (RedHat)
+  yum:
+   name: "{{ remote_syslog_url_rh }}"
+   state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Installing remote_syslog (Debian)
+  yum:
+   name: "{{ remote_syslog_url_deb }}"
+   state: present
+  when: ansible_os_family == "Debian"
+
+- name: Copy remote_syslog's log_files.yml
+  template:
+   src: papertrail/templates/log_files.yml.j2
+   dest: /etc/log_files.yml
+  notify:
+   - remote_syslog restart
+
+- name: Add cron job for restarting remote_syslog (while there's a bug with terminating logs streaming)
+  cron:
+   name: "Restarting remote_syslog"
+   minute: "{{ remote_syslog_cron.minute }}"
+   job: "{{ remote_syslog_cron_job }}"
+   backup: yes 

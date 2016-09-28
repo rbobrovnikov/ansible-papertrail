@@ -1,0 +1,12 @@
+files:
+{% for log_path in remote_syslog_logs %}
+ - {{ log_path }}
+{% endfor %}
+destination:
+  host: {{ papertrailapp_host }} 
+  port: {{ papertrailapp_port }} 
+  protocol: {{ "tls" if papertrailapp_tls else "tcp" }} 
+exclude_patterns:
+{% for patterns in remote_syslog_exclude_patterns %}
+  - {{ patterns }}
+{% endfor %}

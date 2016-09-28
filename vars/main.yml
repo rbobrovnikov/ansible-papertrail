@@ -1,0 +1,25 @@
+papertrailapp_host: logs4.papertrailapp.com
+papertrailapp_port: 44827
+papertrailapp_tls: true 
+papertrail_syslog_facility: "*.*"
+papertrail_syslog_ca_file_url: "https://papertrailapp.com/tools/papertrail-bundle.pem"
+papertrail_syslog_ca_file: /etc/papertrail-bundle.pem 
+papertrail_syslog_ca_checksum: 'ba3b40a34ec33ac0869fa5b17a0c80fc'
+papertrail_syslog_netstream_drv: gtls
+papertrail_syslog_drv_auth_mode: "x509/name" 
+papertrail_syslog_drv_peer: "*.papertrailapp.com"
+
+remote_syslog_ver: 0.18
+remote_syslog_pkg_name: remote_syslog2 
+remote_syslog_arch_rh: x86_64
+remote_syslog_arch_deb: amd64 
+remote_syslog_url_rh: "https://github.com/papertrail/remote_syslog2/releases/download/v{{ remote_syslog_ver }}/{{ remote_syslog_pkg_name }}-{{ remote_syslog_ver }}-1.{{ remote_syslog_arch_rh }}.rpm"
+remote_syslog_url_deb: "https://github.com/papertrail/remote_syslog2/releases/download/v{{ remote_syslog_ver }}/{{ remote_syslog_pkg_name }}_{{ remote_syslog_ver }}_{{ remote_syslog_arch_deb }}.deb"
+remote_syslog_logs:
+ - /var/log/nginx/*.log 
+
+remote_syslog_exclude_patterns: []
+
+remote_syslog_cron:
+  minute: "0-59/15"
+remote_syslog_cron_job: "systemctl restart remote_syslog"

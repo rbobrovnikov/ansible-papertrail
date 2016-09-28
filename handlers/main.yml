@@ -1,0 +1,11 @@
+---
+
+- name: syslog restart
+  service:
+   name: "{{ syslog_service_name.stdout }}" 
+   state: restarted
+
+- name: remote_syslog restart
+  service:
+   name: remote_syslog
+   state: restarted
