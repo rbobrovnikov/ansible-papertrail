@@ -1,0 +1,14 @@
+---
+
+- name: Install rsyslog-gnutls
+  yum:
+   name: rsyslog-gnutls
+   state: present
+  when: papertrailapp_tls
+  notify:
+   - syslog restart
+
+- name: Installing remote_syslog
+  yum:
+   name: "{{ remote_syslog_url_rh }}"
+   state: present
