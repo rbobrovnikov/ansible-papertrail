@@ -1,0 +1,4 @@
+---
+
+remote_syslog_arch_rh: x86_64
+remote_syslog_url_rh: "https://github.com/papertrail/remote_syslog2/releases/download/v{{ remote_syslog_ver }}/{{ remote_syslog_pkg_name }}-{{ remote_syslog_ver }}-1.{{ remote_syslog_arch_rh }}.rpm"

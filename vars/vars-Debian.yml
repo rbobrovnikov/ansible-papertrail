@@ -1,0 +1,4 @@
+---
+
+remote_syslog_arch_deb: amd64
+remote_syslog_url_deb: "https://github.com/papertrail/remote_syslog2/releases/download/v{{ remote_syslog_ver }}/{{ remote_syslog_pkg_name }}_{{ remote_syslog_ver }}_{{ remote_syslog_arch_deb }}.deb"

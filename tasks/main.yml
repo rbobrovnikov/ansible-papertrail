@@ -1,5 +1,8 @@
 ---
 
+- name: Import OS specific variables
+  include_vars: vars-{{ ansible_os_family }}.yml 
+
 - name: Get syslog custom conf directory
   shell: ls -d /etc/*syslog*.d
   register: syslog_confd_dir
