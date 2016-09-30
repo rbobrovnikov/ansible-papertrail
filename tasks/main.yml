@@ -47,14 +47,14 @@
 
 - name: Copy Papertrail syslog config
   template:
-   src: papertrail/templates/syslog-papertrail.conf.j2
+   src: syslog-papertrail.conf.j2
    dest: "{{ syslog_confd_dir.stdout }}/papertrail.conf" 
   notify:
    - syslog restart
 
 - name: Copy remote_syslog's log_files.yml
   template:
-   src: papertrail/templates/log_files.yml.j2
+   src: log_files.yml.j2
    dest: /etc/log_files.yml
   notify:
    - remote_syslog restart

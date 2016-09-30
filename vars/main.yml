@@ -1,5 +1,11 @@
 ---
 
+papertrailapp_host: '' 
+papertrailapp_port: ''
+papertrailapp_tls: true
+papertrail_syslog_ca_file_url: "https://papertrailapp.com/tools/papertrail-bundle.pem"
+papertrail_syslog_ca_checksum: 'ba3b40a34ec33ac0869fa5b17a0c80fc'
+
 remote_syslog_logs:
  - /var/log/nginx/*.log 
 
