@@ -8,6 +8,9 @@ papertrail_syslog_ca_checksum: 'ba3b40a34ec33ac0869fa5b17a0c80fc'
 
 remote_syslog_logs:
  - /var/log/nginx/*.log 
+ - /srv/www/virgil-www-cards/v4/app/storage/logs/app.log
+ - /srv/www/virgil-www-statlogpusher/log/application.log
+ - /var/opt/rh/rh-php56/log/php-fpm/error.log
 
 remote_syslog_exclude_patterns: []
 
